@@ -35,6 +35,8 @@ data <- data %>%
          Sommerlinde, Esche, Lärche, Anmerkung)
 
 data1 <- left_join(tab, data, by="id")
+data1 <- data1 %>% 
+  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=42, "Fi", "Bu" ))
 
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
@@ -48,4 +50,7 @@ ggplot(data1, aes(x_coord, y_coord, col = pH)) +
   scale_color_gradient(low="darkred", high="yellow") +
   #scale_color_gradientn(colours = topo.colors(40)) + 
   theme_bw()
+
+# Neue Zeile mit Zuordnung Fichte Buche einfügen
+
 
