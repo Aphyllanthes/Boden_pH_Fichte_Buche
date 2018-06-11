@@ -45,3 +45,5 @@ ggplot(data1, aes(x_coord, y_coord, col = pH)) +
   scale_color_gradient(low="darkred", high="yellow") +
   #scale_color_gradientn(colours = topo.colors(40)) + 
   theme_bw()
+
+# neue zeile
