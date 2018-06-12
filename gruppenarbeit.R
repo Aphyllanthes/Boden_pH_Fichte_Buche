@@ -44,7 +44,6 @@ data1 <- data1 %>%
   mutate(Anteil_Nadelbaum = Nadelbaum/(Nadelbaum + Laubbaum)) %>% 
   mutate(pH = as.numeric(pH))
 
-
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 
