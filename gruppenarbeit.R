@@ -38,6 +38,12 @@ data1 <- left_join(tab, data, by="id")
 data1 <- data1 %>% 
   mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=42, "Fi", "Bu" ))
 
+data1 <- data1 %>% 
+  mutate(Nadelbaum = Fichte + Lärche, 
+         Laubbaum = Buche + Bergahorn + Sommerlinde + Esche) %>% 
+  mutate(Anteil_Nadelbaum = Nadelbaum/(Nadelbaum + Laubbaum))
+
+
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 
@@ -47,10 +53,9 @@ ggplot(tab, aes(x_coord, y_coord, col = punkt)) + geom_point()
 data1$pH <- as.numeric(data1$pH)
 ggplot(data1, aes(x_coord, y_coord, col = pH)) + 
   geom_point() +
-  scale_color_gradient(low="darkred", high="yellow") +
+  scale_color_gradient(low="blue", high="orange") +
   #scale_color_gradientn(colours = topo.colors(40)) + 
-  theme_bw()
+  theme_bw() + coord_equal()
 
-# Neue Zeile mit Zuordnung Fichte Buche einfügen
 
 
