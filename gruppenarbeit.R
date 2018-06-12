@@ -37,7 +37,12 @@ data <- data %>%
 
 data1 <- left_join(tab, data, by="id")
 data1 <- data1 %>% 
-  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=41, "Fi", "Bu" ))
+  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=41, "Fi", "Bu" )) %>% 
+  mutate(Nadelbaum = Fichte + Lärche, 
+         Laubbaum = Buche + Bergahorn + Sommerlinde + Esche) %>% 
+  mutate(Anteil_Nadelbaum = Nadelbaum/(Nadelbaum + Laubbaum)) %>% 
+  mutate(pH = as.numeric(pH))
+
 
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
@@ -45,12 +50,11 @@ zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 #pdf("punkte.pdf", 7, 4)
 ggplot(tab, aes(x_coord, y_coord, col = punkt)) + geom_point() 
 #dev.off()
-data1$pH <- as.numeric(data1$pH)
 ggplot(data1, aes(x_coord, y_coord, col = pH)) + 
   geom_point() +
-  scale_color_gradient(low="darkred", high="yellow") +
+  scale_color_gradient(low="blue", high="orange") +
   #scale_color_gradientn(colours = topo.colors(40)) + 
-  theme_bw()
+  theme_bw() + coord_equal()
 
 
 
