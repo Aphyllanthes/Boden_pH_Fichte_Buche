@@ -1,0 +1,147 @@
+---
+title: "Veränderung des Boden-pH-Wertes und der Vegetation im Übergang von Nadel zu Laubwald"
+author: "Nele Stackelberg"
+date: "12 Juni 2018"
+output:
+  pdf_document:
+    number_sections: yes
+    #toc: true
+documentclass: article
+classoption: titlepage
+header-includes: 
+  - \usepackage[german]{babel}
+Extension: table_captions, tex_math_dollars
+bibliography: lit.bib
+biblio-style: apalike
+link-citations: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(gstat)
+library(sp)
+```
+
+# Einleitung
+Beprobung von einzelpunkten im Gelände um den Übergang von Fichte zu Buche auf der Fläche zu interpolieren - wie scharf ist die Grenze?.
+
+
+```{r cars, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+wordcountaddin::text_stats("pH_Nadel_zu_Laub.Rmd")
+```
+
+# Methoden
+Der Zeitliche Rahmen ermöglicht an bis zu 60 Punkten pH-Messungen sowie die Aufnahme der Vegetation. Eine Fläche von 40 mal 50 Metern sollte dazu ausgewählt werden, durch die eine Scharfe Grenze eines Fichten zu Laubbaumbestandes verläuft. Dazu werden die Bestandeskarten im Raum Freiburg betrachtet. Damit der pH-Wert auf der Fläche nicht von unterschiedlichem Grundgestein geprägt ist wird zusätzlich die geologische Karte betrachtet.
+Die Auswahl fällt auf einen ca. 30 Jährigen Fichtenbestand am Schönberg, der an einen etwa gleichalten Buchen-Ahorn-Mischwald angrenzt. Das Grundgestein der Probefläche ist der Hauptrogenstein. 
+Für die Probepunkte wird die Fläche in 10x10m Quadrate eingeteilt, worein jeweils drei zufällige Probepunkte gelegt werden. Um die Position der Punkte zu wählen werden mit der Software R (@R) 60 zufällige Winkel und Entfernungen gezogen. So werden der Reihe nach vom Mittelpunkt jedes Quadrates aus, jeweils drei Positionen für die Probenahme bestimmt.
+```{r}
+## Veränderung des BodenpH und der Vegetation im Übergang von Nadel zu Laubwald
+set.seed(1)
+## zufällige punkte generieren:
+grad <- runif(84, min = 0, max = 360)
+dist <- runif(84, min = 0, max = 5)
+x <- rep(rep(1:7, each= 4), each= 3)
+y <- rep(rep(1:4, times =  7), each=  3)
+punkt <- rep(letters[1:3], 28)
+id <- paste0(x,".", y, punkt)
+tab <- data.frame(id, x, y, punkt, grad = round(grad), dist = round(dist, 2))
+
+## korrektur: 5.1a mit 5.4a die grad- und dist-Werte im Feld vertauscht.
+punkt51a <- filter(tab, id=="5.1a")
+punkt54a <- filter(tab, id=="5.4a")
+tab[which(tab$id=="5.1a"),c("grad", "dist")] <- punkt54a[,c("grad","dist")]
+tab[which(tab$id=="5.4a"),c("grad", "dist")] <- punkt51a[,c("grad","dist")]
+
+tab <- tab %>% 
+  mutate(y_coord = round(10*y + sin(2*pi*(183-grad)/360)*dist,2)-5) %>% 
+  mutate(x_coord = round(10*x + cos(2*pi*(183-grad)/360)*dist,2)-15) %>% 
+  filter(x > 1 & x < 7)
+```
+
+
+Die Fläche wird im Feld aufgesucht und die genaue Position wird dort festgelegt, wo der Anteil der Fichten im über die Bestandeskarte ausgewählten Fichtenbestand am größten ist und seine Grenze zum Laubwald am markantesten ist. Mittels Kompass, Maßband und Peilstab wird die Fläche vermessen und die Ecken markiert. Die Ausrichtung der Fläche verläuft hangparallel, was einer relativ genauen Nord-Süd-Ausrichtung (3°-183°) entspricht. 
+Ebenso werden mithilfe des Kompass, peilend, die genauen Probepositionen ausegwählt. An jedem Probepunkt wird eine Bodenprobe in ca. 5 cm Tiefe von ca. 10 ml Volumen genommen. Die Probe wird mit 20 ml destilliertem Wasser vermischt, geschüttelt und stehen gelassen damit sich die Partikel am Grund des Probefläschchens absetzten. Zusätzlich wird an jedem Punkt die Humusform erfasst, der Bedeckungsgrad der überschirmenden Baumarten, je Art, im Umkreis mit $2 m$ radius. Auch die Bodenvegetation wird erfasst (Arten und Deckungsgrad). Es sind nur krautige Pflanzen vorhanden, es gibt keine Verjüngung im Bestand, die größer ist als $20 cm$. 
+Der pH-Wert der Bodenproben wird sobald ca. 10 Proben bereit sind (Substrat hat sich abgesetzt) mit der pH-Sonde des Typ GMH 5520 des Herstellers Greisinger gemessen. Die Genauigkeit der Gerätes beträgt laut Hersteller $+-0.005 pH$. Zu beginn der ersten Messung jedes Tages wird das Gerät wie in der Betriebsanleitung beschrieben kalibriert.
+
+Statistische auswertung:
+Anova ...
+Zur ersten Beschreibung der Stichproben wurde im Fall des pH-Wertes Mittelwert und Standartabweichung jeweils für den Buchen- und den Fichtenstandort im Statistikprogramm R berechnet. Zum Vergleich der beiden Standorte wurde eine Varianzanalyse durchgeführt. Da der Test über die Varianzenhomogenität signifikant unterschiedliche Varianzen für die pH-Werte der beiden Standorte ergab, und damit eine der Vorrausetzungen für eine ANOVA verletzt war, wurde zusätzlich der Kruskal-Wallis-Test (p<0,01) durchgeführt (Dormann, 2013).
+
+Eine räumliche Analyse der pH-Werte erfolgt mittels einem Variogramm, welches die Varianz in Abhängigkeit der Entfernung der Punkte darstellt. Um den pH-Wert über die Fläche zu interpolieren ("kriging") wird ein Modell an das Variogram gefittet. Die Interpolation kann dann graphisch gemeinsam mit den Baumartenanteilen der Punkte dargestellt werden.
+
+Analyse der Vegetation:
+Zu allen aufgenommenen Arten werden die Zeigerwerte "Reaktionszahl" und "Lichtzahl" nach Ellenberg herausgesucht. Für jeden Punkt wird dann der Mittelwert der Reaktions- sowie Lichtzahl aller dort vorkommenden Arten (unabhängig von der Häufigkeit) berechnet. Um festzustellen ob ein Zusammenhang der Vegetation mit dem pH-Wert des Bodens besteht wird geprüft ob Zeigerwerte und pH-Werte korrelieren. Für beide Zeigerwerte wird zudem ein Variogramm berechnet.
+
+# Ergebnisse
+```{r daten_einlesen, echo=FALSE}
+### Im Feld aufgenommene Daten einlesen:
+data <- read_excel("tabelle1.xlsx")
+data <- data %>% 
+  select(id, humusform, pH, Fichte, Buche, Bergahorn,
+         Sommerlinde, Esche, Lärche, Anmerkung)
+
+data1 <- left_join(tab, data, by="id")
+data1 <- data1 %>% 
+  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=42, "Fi", "Bu" )) %>% 
+  mutate(Nadelbaum = Fichte + Lärche, 
+         Laubbaum = Buche + Bergahorn + Sommerlinde + Esche) %>% 
+  mutate(Anteil_Nadelbaum = Nadelbaum/(Nadelbaum + Laubbaum))%>% 
+  mutate(pH = as.numeric(pH))
+
+vegetation <- read_excel("vegetation1.xlsx")
+zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
+```
+
+Die räumliche Varianz des pH-Wertes ist in Abbildung \ref{variogram} durch ein Variogram dargestellt. In der Abbildung ist auch das gefittete exponentielle Modell dargestellt. Es wird das exponentielle Model verwendet, da es visuell am besten an die Daten passt. Es zeigt sich, dass die Varianz der pH-Werte für nahegelegene Punkte gering ist und mit größeren Entfernungen zunimmt. Je weiter die Entfernung zu nimmt, desto geringer ist die zunahme der Varianz. Stellt sich im Variogramm in einer bestimmten Entfernung ein Schwellenwert ein ("sill variance"), so bedeutet dies, dass Punkte mit einer solchen Entfernung zueinander unabhängig sind.
+
+```{r variogram, fig.cap="Variogram des pH-Wertes (Punkte) und gefittetes exponentielles Modell (Linie). Es zeigt, dass die Varianz der Punkte mit zunehmender Entfernung größer wird. \\label{variogram}"}
+geodat <- data1
+coordinates(geodat) <- ~x_coord + y_coord
+
+## fit a model to the variogram:
+vgm_pH <- variogram(pH~1, data=geodat)
+fit_vgm <- fit.variogram(vgm_pH, vgm(model = "Exp")) 
+## fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
+plot(vgm_pH, fit_vgm, xlab="Distanz in m", ylab="Semivarianz")
+```
+
+Das gefittete Model wird verwendet um den pH-Wert der gesamten Fläche zu interpolieren. Das Ergebnis ist in Abbildung \ref{interpol} dargestellt. Der pH erreicht dort wo die Fichte als hauptbestandteil des Nadelholzes steht mit unter pH 6 die Tiefsten Werte. Die höchsten Werte des pH sind im Laubwaldbestand gemessen worden. Die pH-Werte der beiden Bestände unterscheiden sich, die Grenze zwischen Nadel und Laubwaldbestand ist jedoch nicht als deutliche Linie zu erkennen, sondern hat vielmehr einen verschwommenen Übergang.  
+
+```{r kriging, fig.cap="Interpolation des pH-Wertes über die Probefläche (40 x 50 m). Norden ist links im Bild, Süden rechts. Der Anteil der Nadelbäume im Umkreis von 2m um jeden Probepunkt ist durch die Größe der schwarzen Punkte dargestellt. Die Nadelbäume sind fast ausschließlich Fichten, nur eine Lärche steht auf der Probefläche. Die Laubbäume sind in verschiedenen Anteilen Buche, Bergahorn, Esche und Linde. \\label{interpol}"}
+grid <- makegrid(geodat, cellsize = 0.5)
+#grid <- SpatialPoints(grid)
+coordinates(grid) <- ~x1 + x2
+pH_kriged <- krige(pH ~ 1, geodat, grid, model=fit_vgm)
+
+pH_kriged %>% as.data.frame %>% 
+  mutate(pH_interpolation = var1.pred) %>% 
+  ggplot(aes(x=x1, y=x2)) + 
+  geom_tile(aes(fill=pH_interpolation)) + coord_equal() +
+  scale_fill_gradient(low = "blue", high="orange") +
+  #scale_x_continuous(labels=comma) + scale_y_continuous(labels=comma) +
+  theme_bw() + xlab("x") + ylab("y") +
+  geom_point(data = data1, aes(x_coord, y_coord, size = Anteil_Nadelbaum)) 
+```
+
+
+
+
+"In the classical approach random selection is essential to guarantee unbiased
+estimates with known variance." [@geostat]
+
+Die praktische Geostatistik behandelt die Ergebnisse so, als wären sie die Ergebnisse von korrelierten Zufallsprozessen [@geostat, p.11]
+
+Punkte sind ungleichmäßig Verteilt in zwei dimensionen. Sample-variogram experimental variogram
+Das Variogram erreicht tendiert gegen eine Schwellen-Varianz ("sill varianz"). Diese gleicht der gesamten Varianz des Datensatzes. Ist die Schwelle erreicht, so bedeutet das, dass Punkte die in solch einer Entfernung zu einem andern Punkt liegen nicht mehr von diesem beeinflusst werden. Wir können in unserem Beispiel jedoch von Anisotropie ausgehen (Richtungsabhängigkeit). Dies ist 
+
+
+# Diskussion
+kleinräumige Differenzen des pH können sich nicht so stark auf die Vegetation auswirken - fehlende Konkurrenz? Der Einfluss des lichtes ich viel Prägender (Fichte ganzjährig schattig)
+
+# Literatur
+<div id="refs"></div>
+
+# Anhang {-}
