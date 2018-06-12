@@ -15,14 +15,30 @@ mittlere_zeigerwerte <- vegetation1 %>%
   group_by(id) %>% 
   summarise(R = mean(R, na.rm=T), L = mean(L, na.rm = T))
 
-data1 <- left_join(data1, mittlere_zeigerwerte, by="id")
+dataveg <- left_join(data1, mittlere_zeigerwerte, by="id")
 
 ##Reaktionszahl
-geodat <- filter(data1, !is.na(R))
-coordinates(geodat) <- ~x_coord + y_coord
-Reaktionszahl <- gstat(id = "R", formula = R~1, data = geodat)
-#formula that defines the dependent variable as a linear model of independent variables; suppose the dependent variable has name z, for ordinary and simple kriging use the formula z~1; for simple kriging also define beta (see below); for universal kriging, suppose z is linearly dependent on x and y, use the formula z~x+y
-plot(variogram(Reaktionszahl))
-Reaktionszahl1 <- gstat(id = "R", formula = R~x_coord+y_coord, data= geodat)
-plot(variogram(Reaktionszahl1))
+reaktdat <- filter(dataveg, !is.na(R))
+coordinates(reaktdat) <- ~x_coord + y_coord
+
+## fit a model to the variogram:
+vgm_R <- variogram(R~1, data=reaktdat)
+fit_R <- fit.variogram(vgm_R, vgm(model = "Exp")) 
+## fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
+plot(vgm_R, fit_R)
+
+##Lichtzahl
+lichtdat <- filter(dataveg, !is.na(L))
+coordinates(lichtdat) <- ~x_coord + y_coord
+
+## fit a model to the variogram:
+vgm_L <- variogram(L~1, data=lichtdat)
+fit_L <- fit.variogram(vgm_L, vgm(model = "Exp")) 
+## fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
+plot(vgm_L, fit_L)
+
+cor.test(dataveg$pH, dataveg$R, use= "pairwise.complete.obs")
+## keine signifikanz im t-test, keine korrelation
+cor.test(dataveg$pH, dataveg$L)
+## leicht signifikant im t-test, kaum korrelation
 

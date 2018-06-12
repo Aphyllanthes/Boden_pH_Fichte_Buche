@@ -13,12 +13,14 @@ punkt <- rep(letters[1:3], 28)
 id <- paste0(x,".", y, punkt)
 
 tab <- data.frame(id, x, y, punkt, grad = round(grad), dist = round(dist, 2))
+rm(id, x, y, punkt, grad, dist)
 
 ## zwei vertauschte Punkte: 5.1a mit 5.4a die grad- und dist-Werte wurden im Feld vertauscht.
 punkt51a <- filter(tab, id=="5.1a")
 punkt54a <- filter(tab, id=="5.4a")
 tab[which(tab$id=="5.1a"),c("grad", "dist")] <- punkt54a[,c("grad","dist")]
 tab[which(tab$id=="5.4a"),c("grad", "dist")] <- punkt51a[,c("grad","dist")]
+rm(punkt51a, punkt54a)
 
 tab <- tab %>% 
   mutate(y_coord = round(10*y + sin(2*pi*(183-grad)/360)*dist,2)-5) %>% 
@@ -46,13 +48,13 @@ vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 
 #pdf("punkte.pdf", 7, 4)
-ggplot(tab, aes(x_coord, y_coord, col = punkt)) + geom_point() 
+#ggplot(tab, aes(x_coord, y_coord, col = punkt)) + geom_point() 
 #dev.off()
-ggplot(data1, aes(x_coord, y_coord, col = pH)) + 
-  geom_point() +
-  scale_color_gradient(low="blue", high="orange") +
-  #scale_color_gradientn(colours = topo.colors(40)) + 
-  theme_bw() + coord_equal()
+# ggplot(data1, aes(x_coord, y_coord, col = pH)) + 
+#   geom_point() +
+#   scale_color_gradient(low="blue", high="orange") +
+#   #scale_color_gradientn(colours = topo.colors(40)) + 
+#   theme_bw() + coord_equal()
 
 
 
