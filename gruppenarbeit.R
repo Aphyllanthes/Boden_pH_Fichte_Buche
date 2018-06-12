@@ -13,7 +13,7 @@ punkt <- rep(letters[1:3], 28)
 id <- paste0(x,".", y, punkt)
 
 tab <- data.frame(id, x, y, punkt, grad = round(grad), dist = round(dist, 2))
-rm(id, x, y, punkt, grad, dist)
+rm(id, x, y, punkt, dist, grad)
 
 ## zwei vertauschte Punkte: 5.1a mit 5.4a die grad- und dist-Werte wurden im Feld vertauscht.
 punkt51a <- filter(tab, id=="5.1a")
@@ -38,11 +38,12 @@ data <- data %>%
 
 data1 <- left_join(tab, data, by="id")
 data1 <- data1 %>% 
-  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=42, "Fi", "Bu" )) %>% 
+  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=41, "Fi", "Bu" )) %>% 
   mutate(Nadelbaum = Fichte + Lärche, 
          Laubbaum = Buche + Bergahorn + Sommerlinde + Esche) %>% 
   mutate(Anteil_Nadelbaum = Nadelbaum/(Nadelbaum + Laubbaum)) %>% 
   mutate(pH = as.numeric(pH))
+
 
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
@@ -55,6 +56,7 @@ zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 #   scale_color_gradient(low="blue", high="orange") +
 #   #scale_color_gradientn(colours = topo.colors(40)) + 
 #   theme_bw() + coord_equal()
+
 
 
 
