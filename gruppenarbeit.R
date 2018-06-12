@@ -13,6 +13,7 @@ punkt <- rep(letters[1:3], 28)
 id <- paste0(x,".", y, punkt)
 
 tab <- data.frame(id, x, y, punkt, grad = round(grad), dist = round(dist, 2))
+rm(id, x, y, punkt, dist, grad)
 
 ## zwei vertauschte Punkte: 5.1a mit 5.4a die grad- und dist-Werte wurden im Feld vertauscht.
 punkt51a <- filter(tab, id=="5.1a")
@@ -36,7 +37,7 @@ data <- data %>%
 
 data1 <- left_join(tab, data, by="id")
 data1 <- data1 %>% 
-  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=42, "Fi", "Bu" ))
+  mutate(Baumart = ifelse( as.numeric(paste0(x, y))<=41, "Fi", "Bu" ))
 
 vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
@@ -51,6 +52,6 @@ ggplot(data1, aes(x_coord, y_coord, col = pH)) +
   #scale_color_gradientn(colours = topo.colors(40)) + 
   theme_bw()
 
-# Neue Zeile mit Zuordnung Fichte Buche einfügen
+
 
 
