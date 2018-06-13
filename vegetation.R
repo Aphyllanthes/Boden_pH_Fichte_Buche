@@ -17,28 +17,28 @@ mittlere_zeigerwerte <- vegetation1 %>%
 
 dataveg <- left_join(data1, mittlere_zeigerwerte, by="id")
 
+# Korrelation ?
+cor.test(dataveg$pH, dataveg$R, use= "pairwise.complete.obs")
+## keine signifikanz im t-test, keine korrelation
+cor.test(dataveg$pH, dataveg$L)
+## leicht signifikant im t-test, kaum korrelation
+
 ##Reaktionszahl
 reaktdat <- filter(dataveg, !is.na(R))
 coordinates(reaktdat) <- ~x_coord + y_coord
-
-## fit a model to the variogram:
+### fit a model to the variogram:
 vgm_R <- variogram(R~1, data=reaktdat)
 fit_R <- fit.variogram(vgm_R, vgm(model = "Exp")) 
-## fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
+### fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
 plot(vgm_R, fit_R)
 
 ##Lichtzahl
 lichtdat <- filter(dataveg, !is.na(L))
 coordinates(lichtdat) <- ~x_coord + y_coord
-
-## fit a model to the variogram:
+### fit a model to the variogram:
 vgm_L <- variogram(L~1, data=lichtdat)
 fit_L <- fit.variogram(vgm_L, vgm(model = "Exp")) 
-## fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
+### fit variogram: model = gaussian (?) (Lin wäre linear, ... vgm())
 plot(vgm_L, fit_L)
 
-cor.test(dataveg$pH, dataveg$R, use= "pairwise.complete.obs")
-## keine signifikanz im t-test, keine korrelation
-cor.test(dataveg$pH, dataveg$L)
-## leicht signifikant im t-test, kaum korrelation
 
