@@ -17,7 +17,15 @@ link-citations: true
 ---
 
 ```{r setup, include=FALSE}
+<<<<<<< HEAD
 knitr::opts_chunk$set(echo = TRUE)
+=======
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 library(readxl)
 library(dplyr)
 library(ggplot2)
@@ -61,14 +69,25 @@ tab <- tab %>%
   filter(x > 1 & x < 7)
 ```
 
+<<<<<<< HEAD
 
 Die Fläche wird im Feld aufgesucht und die genaue Position wird dort festgelegt, wo der Anteil der Fichten im über die Bestandeskarte ausgewählten Fichtenbestand am größten ist und seine Grenze zum Laubwald am markantesten ist. Mittels Kompass, Maßband und Peilstab wird die Fläche vermessen und die Ecken markiert. Die Ausrichtung der Fläche verläuft hangparallel, was einer relativ genauen Nord-Süd-Ausrichtung (3°-183°) entspricht. 
+=======
+Die Fläche wird im Feld aufgesucht und die genaue Position wird dort festgelegt, wo der Anteil der Fichten im über die Bestandeskarte ausgewählten Fichtenbestand am größten ist und seine Grenze zum Laubwald am markantesten ist. Mittels Kompass, Maßband und Peilstab wird die Fläche vermessen und die Ecken markiert. Die Ausrichtung der Fläche verläuft hangparallel, was einer relativ genauen Nord-Süd-Ausrichtung (3°-183°) entspricht. 
+
+![Die Probefläche und ihre Position im Wald. Die Fichten stehen in der nördlichen Hälfte der Probefläche, im südlichen Teil ist reiner Laubwald. Der Hang neigt sich leicht nach Osten hin abwärts.](Karte1.jpeg)
+
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 Ebenso werden mithilfe des Kompass, peilend, die genauen Probepositionen ausegwählt. An jedem Probepunkt wird eine Bodenprobe in ca. 5 cm Tiefe von ca. 10 ml Volumen genommen. Die Probe wird mit 20 ml destilliertem Wasser vermischt, geschüttelt und stehen gelassen damit sich die Partikel am Grund des Probefläschchens absetzten. Zusätzlich wird an jedem Punkt die Humusform erfasst, der Bedeckungsgrad der überschirmenden Baumarten, je Art, im Umkreis mit $2 m$ radius. Auch die Bodenvegetation wird erfasst (Arten und Deckungsgrad). Es sind nur krautige Pflanzen vorhanden, es gibt keine Verjüngung im Bestand, die größer ist als $20 cm$. 
 Der pH-Wert der Bodenproben wird sobald ca. 10 Proben bereit sind (Substrat hat sich abgesetzt) mit der pH-Sonde des Typ GMH 5520 des Herstellers Greisinger gemessen. Die Genauigkeit der Gerätes beträgt laut Hersteller $+-0.005 pH$. Zu beginn der ersten Messung jedes Tages wird das Gerät wie in der Betriebsanleitung beschrieben kalibriert.
 
 Statistische auswertung:
+<<<<<<< HEAD
 Anova ...
 Zur ersten Beschreibung der Stichproben wurde im Fall des pH-Wertes Mittelwert und Standartabweichung jeweils für den Buchen- und den Fichtenstandort im Statistikprogramm R berechnet. Zum Vergleich der beiden Standorte wurde eine Varianzanalyse durchgeführt. Da der Test über die Varianzenhomogenität signifikant unterschiedliche Varianzen für die pH-Werte der beiden Standorte ergab, und damit eine der Vorrausetzungen für eine ANOVA verletzt war, wurde zusätzlich der Kruskal-Wallis-Test (p<0,01) durchgeführt (Dormann, 2013).
+=======
+Die aufgenommenen Daten werden in R ausgewertet. Die Fläche wird in die beiden Klassen "Nadelbaum" und "Laubbaum" eingeteilt. Alle Probepunkte die von Fichten oder Lärchen überschirmt sind werden in die Klasse "Nadelbaum" eingeteilt, Flächen auf denen 0 % Nadelbaum vorhanden ist werden in die Klasse "Laubbaum" eingeteilt. Um die beiden Klassen zu vergleichen wird eine Varianzanalyse (ANOVA) nach @Dormann durchgeführt. Da der Test über die Varianzenhomogenität signifikant unterschiedliche Varianzen für die pH-Werte der beiden Klassen liefert, und damit eine der Vorrausetzungen für eine ANOVA verletzt sind, wird zusätzlich der Kruskal-Wallis-Test (p<0,01) durchgeführt.
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 
 Eine räumliche Analyse der pH-Werte erfolgt mittels einem Variogramm, welches die Varianz in Abhängigkeit der Entfernung der Punkte darstellt. Um den pH-Wert über die Fläche zu interpolieren ("kriging") wird ein Modell an das Variogram gefittet. Die Interpolation kann dann graphisch gemeinsam mit den Baumartenanteilen der Punkte dargestellt werden.
 
@@ -76,6 +95,10 @@ Analyse der Vegetation:
 Zu allen aufgenommenen Arten werden die Zeigerwerte "Reaktionszahl" und "Lichtzahl" nach Ellenberg herausgesucht. Für jeden Punkt wird dann der Mittelwert der Reaktions- sowie Lichtzahl aller dort vorkommenden Arten (unabhängig von der Häufigkeit) berechnet. Um festzustellen ob ein Zusammenhang der Vegetation mit dem pH-Wert des Bodens besteht wird geprüft ob Zeigerwerte und pH-Werte korrelieren. Für beide Zeigerwerte wird zudem ein Variogramm berechnet.
 
 # Ergebnisse
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 ```{r daten_einlesen, echo=FALSE}
 ### Im Feld aufgenommene Daten einlesen:
 data <- read_excel("tabelle1.xlsx")
@@ -95,6 +118,30 @@ vegetation <- read_excel("vegetation1.xlsx")
 zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 ```
 
+<<<<<<< HEAD
+=======
+
+```{r varianzanalyse, fig.cap="Die kumulative Dichteverteilung des pH-Wertes (links) und ein Boxplot der beiden Klassen 'Nadelbaum' und 'Laubbaum' (rechts).\\label{aov}"}
+#kumulative Darstellung und Vergleich mit Normalverteilung
+library(MASS)
+fit.norm <- fitdistr(data1$pH,"normal")
+
+par(mfrow=c(1,2), mar=c(4,5,4,0.5))
+plot(ecdf(data1$pH), pch="", verticals=T, las=1,main="Normalverteilung", xlab="pH", cex.lab=1.5)
+curve(pnorm(x, mean=fit.norm$estimate[1], sd=fit.norm$estimate[2]), add=T,lwd=3, col="grey")
+lines(ecdf(data1$pH), pch="", verticals=T) # passt gut !
+
+#KStest
+ks.test(data1$pH, "pnorm", fit.norm$estimate[1],+ fit.norm$estimate[2]) # interpretation ?
+
+# Visuelle Darstellung
+boxplot(data1$pH[which(data1$Anteil_Nadelbaum > 0)], data1$pH[which(data1$Anteil_Nadelbaum <= 0)], ylab="pH-Wert", names=c("Fichte","Buche"))
+```
+
+Die gemessenen pH-Werte unter Fichte liegen mit einem Minimum von 5,58 pH und einem Maximum von 7,47 pH im mäßig sauren bis schwach alkalischen Bereich, während im Buchen-Bergahorn-Mischwald mit einem Minimum von 6,44 pH und einem Maximum von 8,48 pH schwach saure bis mäßig alkalische pH-Werte gemessen wurden.
+Ein Kolmogorov-Smirnov-test und die kumulative Dichteverteilung der pH-Werte (Abbildung \ref{aov} links) bestätigen, dass die Daten normalverteilt sind. Da die Varianzhomogenität der Daten verletzt ist wird ein Kruskal-Wallis-Test durchgeführt. Dieser zeigt einen Signifikanten Unterschied des pH-Wertes zwischen den beiden Klassen auf. Der pH-Wert des Oberboden im von Fichten geprägten Standort beträgt im Durchschnitt nur 6.64 ± 0,49 pH, im Buchen-Bergahorn-Mischwald ist er mit 7.35 ± 0,54 pH deutlich höher (Siehe Abb. \ref{aov} rechts).
+
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 Die räumliche Varianz des pH-Wertes ist in Abbildung \ref{variogram} durch ein Variogram dargestellt. In der Abbildung ist auch das gefittete exponentielle Modell dargestellt. Es wird das exponentielle Model verwendet, da es visuell am besten an die Daten passt. Es zeigt sich, dass die Varianz der pH-Werte für nahegelegene Punkte gering ist und mit größeren Entfernungen zunimmt. Je weiter die Entfernung zu nimmt, desto geringer ist die zunahme der Varianz. Stellt sich im Variogramm in einer bestimmten Entfernung ein Schwellenwert ein ("sill variance"), so bedeutet dies, dass Punkte mit einer solchen Entfernung zueinander unabhängig sind.
 
 ```{r variogram, fig.cap="Variogram des pH-Wertes (Punkte) und gefittetes exponentielles Modell (Linie). Es zeigt, dass die Varianz der Punkte mit zunehmender Entfernung größer wird. \\label{variogram}"}
@@ -126,8 +173,12 @@ pH_kriged %>% as.data.frame %>%
   geom_point(data = data1, aes(x_coord, y_coord, size = Anteil_Nadelbaum)) 
 ```
 
+<<<<<<< HEAD
 
 
+=======
+Für die Reaktionszahl (Zeigerwert nach Ellenberg aus @Rothmaler) der Vegetation der Krautschicht wird keine Korrelation mit dem pH-Wert festgestellt. Die Lichtzahl korreliert ebenfalls nicht mit dem pH-Wert. Von den 37 erfassten Arten kommen viele Arten nur vereinzelt vor, einige wenige wie *Viola reichenbachiana* und *Hedera helix* Flächig.  
+>>>>>>> 5e7f6641f498dec61dbbdee64e476ffc5cad3ba1
 
 "In the classical approach random selection is essential to guarantee unbiased
 estimates with known variance." [@geostat]
