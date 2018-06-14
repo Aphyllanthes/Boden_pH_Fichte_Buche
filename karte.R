@@ -2,10 +2,10 @@
 ## koordinaten punkt 25/0: 47.954579, 7.798374
 # 47.954405, 7.798380
 # 47.954365, 7.798366
-coordis <- read.csv("nele.csv")
-coordis <- coordis[c(7,4),]
-coordinates(coordis) <- ~lon + lat
-coordis@proj4string <-CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+# coordis <- read.csv("nele.csv")
+# coordis <- coordis[c(7,4),]
+# coordinates(coordis) <- ~lon + lat
+# coordis@proj4string <-CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 
 library(leaflet)
 leaflet() %>% 
@@ -36,9 +36,9 @@ projection(Map) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 
 pal <- colorBin("Greys", domain = 255:0, na.color = "transparent", reverse = T)
 leaflet() %>% 
-  addTiles %>% 
-  addProviderTiles(provider = "Esri.WorldImagery", 
-                   options = providerTileOptions(opacity = 0.5)) %>% 
+  addTiles(urlTemplate = "https://mts1.google.com/vt/lyrs=s&hl=en&src=app&x={x}&y={y}&z={z}&s=G", attribution = 'Google') %>% 
+  #addProviderTiles(provider = "Esri.WorldImagery", 
+   #                options = providerTileOptions(opacity = 0.5)) %>% 
   addScaleBar(position = c("bottomright"), options = scaleBarOptions(imperial = FALSE) ) %>% 
   #addPolygons(coornercords, color = "red", lng=coornercords$lon, lat=coornercords$lat) #%>% 
   addRasterImage(Map, color = pal, opacity = 0.3, maxBytes = 123123123) %>% 
