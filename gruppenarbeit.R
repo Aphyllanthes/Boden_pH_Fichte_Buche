@@ -50,9 +50,9 @@ zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 #pdf("punkte.pdf", 7, 4)
 #ggplot(tab, aes(x_coord, y_coord, col = punkt)) + geom_point() 
 #dev.off()
-ggplot(data1, aes(x_coord, y_coord, col = pH)) +
+ggplot(data1, aes(x_coord, y_coord)) +
   geom_point() +
-  scale_color_gradient(low="blue", high="orange") +
+  #scale_color_gradient(low="blue", high="orange") +
   #scale_color_gradientn(colours = topo.colors(40)) +
   theme_bw() + coord_equal()
 
