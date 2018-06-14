@@ -1,6 +1,8 @@
 library(gstat)
 library(sp)
 
+source("gruppenarbeit.R")
+
 geodat <- data1
 coordinates(geodat) <- ~x_coord + y_coord
 
@@ -22,10 +24,11 @@ coordinates(grid) <- ~x1 + x2
 pH_kriged <- krige(pH ~ 1, geodat, grid, model=fit_vgm)
 
 pH_kriged %>% as.data.frame %>% 
+  mutate(pH_interpolation = var1.pred) %>% 
   ggplot(aes(x=x1, y=x2)) + 
-  geom_tile(aes(fill=var1.pred)) + coord_equal() +
+  geom_tile(aes(fill=pH_interpolation)) + coord_equal() +
   scale_fill_gradient(low = "blue", high="orange") +
   #scale_x_continuous(labels=comma) + scale_y_continuous(labels=comma) +
-  theme_bw() + 
+  theme_bw() + xlab("x") + ylab("y") +
   geom_point(data = data1, aes(x_coord, y_coord, size = Anteil_Nadelbaum)) 
 

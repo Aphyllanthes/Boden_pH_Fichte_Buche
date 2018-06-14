@@ -33,7 +33,7 @@ tab <- tab %>%
 ### Im Feld aufgenommene Daten einlesen:
 data <- read_excel("tabelle1.xlsx")
 data <- data %>% 
-  select(id, humusform, pH, Fichte, Buche, Bergahorn,
+  dplyr::select(id, humusform, pH, Fichte, Buche, Bergahorn,
          Sommerlinde, Esche, Lärche, Anmerkung)
 
 data1 <- left_join(tab, data, by="id")

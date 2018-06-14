@@ -30,12 +30,17 @@ library(sp)
 ```
 
 # Einleitung
+Die Fichte als forstwirtschaftlich Bedeutende Baumart 
+Standortsverschlechterung durch die Fichte
+Räumlich direkter Effekt, oder im Übergang zum Laubwald verschwommener bzw. kein Einfluss?
+Die Fichte als Standortsfremde baumart wird als Bedrohung für die Artenvielfalt gesehen. Ist dies durch die Bodenversauerung, und die damit einhergehende Veränderung des Standortes zu sauer für die potentiell Natürliche Vegetation am Schönberg?
+
 Beprobung von einzelpunkten im Gelände um den Übergang von Fichte zu Buche auf der Fläche zu interpolieren - wie scharf ist die Grenze?.
 
 Schönber - Vorbergzone
 Hauptrogenstein - Kalkoolith, ein Kalkgestein des milleren Jura. 
 
-Der pH gilt als eine wichtige und aussagekräftige Bodenkenngröße (@Scheffer)
+Der pH gilt als eine wichtige und aussagekräftige Bodenkenngröße (@Scheffer).
 
 ```{r cars, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 wordcountaddin::text_stats("pH_Nadel_zu_Laub.Rmd")
@@ -77,7 +82,7 @@ Ebenso werden mithilfe des Kompass, peilend, die genauen Probepositionen ausegw�
 Der pH-Wert der Bodenproben wird sobald ca. 10 Proben bereit sind (Substrat hat sich abgesetzt) mit der pH-Sonde des Typ GMH 5520 des Herstellers Greisinger gemessen. Die Genauigkeit der Gerätes beträgt laut Hersteller $+-0.005 pH$. Zu beginn der ersten Messung jedes Tages wird das Gerät wie in der Betriebsanleitung beschrieben kalibriert.
 
 Statistische auswertung:
-Die aufgenommenen Daten werden in R ausgewertet. Die Fläche wird in die beiden Klassen "Nadelbaum" und "Laubbaum" eingeteilt. Alle Probepunkte die von Fichten oder Lärchen überschirmt sind werden in die Klasse "Nadelbaum" eingeteilt, Flächen auf denen 0 % Nadelbaum vorhanden ist werden in die Klasse "Laubbaum" eingeteilt. Um die beiden Klassen zu vergleichen wird eine Varianzanalyse (ANOVA) nach @Dormann durchgeführt. Da der Test über die Varianzenhomogenität signifikant unterschiedliche Varianzen für die pH-Werte der beiden Klassen liefert, und damit eine der Vorrausetzungen für eine ANOVA verletzt sind, wird zusätzlich der Kruskal-Wallis-Test (p<0,01) durchgeführt.
+Die aufgenommenen Daten werden in R ausgewertet. Die Fläche wird in die beiden Klassen "Nadelwald" und "Laubbaum" eingeteilt. Alle Probepunkte die von Fichten oder Lärchen überschirmt sind werden in die Klasse "Nadelbaum" eingeteilt, Flächen auf denen 0 % Nadelbaum vorhanden ist werden in die Klasse "Laubbaum" eingeteilt. Um die beiden Klassen zu vergleichen wird eine Varianzanalyse (ANOVA) nach @Dormann durchgeführt. Da der Test über die Varianzenhomogenität signifikant unterschiedliche Varianzen für die pH-Werte der beiden Klassen liefert, und damit eine der Vorrausetzungen für eine ANOVA verletzt sind, wird zusätzlich der Kruskal-Wallis-Test (p<0,01) durchgeführt.
 
 Eine räumliche Analyse der pH-Werte erfolgt mittels einem Variogramm, welches die Varianz in Abhängigkeit der Entfernung der Punkte darstellt. Um den pH-Wert über die Fläche zu interpolieren ("kriging") wird ein Modell an das Variogram gefittet. Die Interpolation kann dann graphisch gemeinsam mit den Baumartenanteilen der Punkte dargestellt werden.
 
@@ -90,7 +95,7 @@ Zu allen aufgenommenen Arten werden die Zeigerwerte "Reaktionszahl" und "Lichtza
 ### Im Feld aufgenommene Daten einlesen:
 data <- read_excel("tabelle1.xlsx")
 data <- data %>% 
-  select(id, humusform, pH, Fichte, Buche, Bergahorn,
+  dplyr::select(id, humusform, pH, Fichte, Buche, Bergahorn,
          Sommerlinde, Esche, Lärche, Anmerkung)
 
 data1 <- left_join(tab, data, by="id")
@@ -106,7 +111,7 @@ zeigerwerte <- read_excel("vegetation1.xlsx", sheet = 2)
 ```
 
 
-```{r varianzanalyse, fig.cap="Die kumulative Dichteverteilung des pH-Wertes (links) und ein Boxplot der beiden Klassen 'Nadelbaum' und 'Laubbaum' (rechts).\\label{aov}"}
+```{r varianzanalyse, fig.cap="Die kumulative Dichteverteilung des pH-Wertes (links) und ein Boxplot der beiden Klassen 'Nadelwald' und 'Laubwald' (rechts).\\label{aov}"}
 #kumulative Darstellung und Vergleich mit Normalverteilung
 library(MASS)
 fit.norm <- fitdistr(data1$pH,"normal")
@@ -120,7 +125,7 @@ lines(ecdf(data1$pH), pch="", verticals=T) # passt gut !
 ks.test(data1$pH, "pnorm", fit.norm$estimate[1],+ fit.norm$estimate[2]) # interpretation ?
 
 # Visuelle Darstellung
-boxplot(data1$pH[which(data1$Anteil_Nadelbaum > 0)], data1$pH[which(data1$Anteil_Nadelbaum <= 0)], ylab="pH-Wert", names=c("Nadelbaum","Laubbaum"))
+boxplot(data1$pH[which(data1$Anteil_Nadelbaum > 0)], data1$pH[which(data1$Anteil_Nadelbaum <= 0)], ylab="pH-Wert", names=c("Nadelwald","Laubwald"))
 ```
 
 Die gemessenen pH-Werte unter Fichte liegen mit einem Minimum von 5,58 pH und einem Maximum von 7,47 pH im mäßig sauren bis schwach alkalischen Bereich, während im Buchen-Bergahorn-Mischwald mit einem Minimum von 6,44 pH und einem Maximum von 8,48 pH schwach saure bis mäßig alkalische pH-Werte gemessen wurden.
@@ -170,6 +175,8 @@ Das Variogram erreicht tendiert gegen eine Schwellen-Varianz ("sill varianz"). D
 
 # Diskussion
 Laut @Koerner (S. 57) handelt es sich bei den Böden auf Hauptrogenstein am Schönberg um humusreiche flachgründige Böden (Rendzinen) mit einem hohen pH-Wert, der meist über dem Neutralpunkt liegt. Solche pH-Werte konnten wir unter dem Laubwaldbestand feststellen, jedoch nicht unter dem Nadelbestand. Da die Fichte Standortsfremd ist  und nicht der potentiell natürlichen Vegetation (PNV) des Schönbergs entspricht ist anzunehmen, dass der erst ca. 30 Jahre alte Fichtenbestand den pH-Wert des Oberbodens dem mit Mittleren pH-Wert von $6,6 \ pH$ bereits von seinem natürlichen Zustand abgesengt hat. Dem Zugrunde liegt jedoch die Annahme, das die Fläche vor der Bepflanzung mit Fichte und Buche einheitlich als Waldweide mit Baumarten der PNV genutzt wurde.
+
+Dass die Fichte die Bodenversauerung bestärkt ist bekannt (Quelle...)
 
 Während die Fichtenstreu sich bereits auf den pH-Wert des Bodens ausgewirkt hat, so zeigt sich dies noch nicht in den Zeigerwerten der Bodenvegetation. Dies liegt daran, dass Zeigerwerte nicht nur den physiologischen Anspruch der Pflanze darstellen, sondern eine relative Standortskonstanz. Der Standort der Pflanze wird von vielen Faktoren beeinflusst, unter anderem Konkurrenz und Kooperation (@Wilmanns). Die kleinräumige Heterogenität der beschattenden Baumarten (Nadelbäume = ganzjährig weniger Licht), fehlende Konkurrenz und der starke Verbiss im Bestand wirkt sich wahrscheinlich auch auf die vorkommenden Arten aus. Ein weiterer Einflussfaktor auf die Vegetation stellt wahrscheinlich die ehemalige Nutzung als Waldweide dar. Beispielsweise haben wir an vielen Orten *Ilex aquifolium* in der Verjüngung vorgefunden, was laut @Koerner (S. 87) eine Erinnerung an die Zeit der Waldweide ist.
 Um den Unterschied der Vegetation auf Standorten mit einem pH-Wert Unterschied von nur 2 pH festzustellen, so müssten größere Flächen, die räumlich voneinander getrennt sind untersucht werden. Mit größeren Stichproben wäre dann zu erwarten, dass sich ein Unterschied in den vorkommenden Pflanzengesellschaften zeigt.
