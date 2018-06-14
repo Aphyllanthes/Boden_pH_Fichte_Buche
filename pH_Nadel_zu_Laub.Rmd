@@ -32,6 +32,10 @@ library(sp)
 # Einleitung
 Beprobung von einzelpunkten im Gelände um den Übergang von Fichte zu Buche auf der Fläche zu interpolieren - wie scharf ist die Grenze?.
 
+Schönber - Vorbergzone
+Hauptrogenstein - Kalkoolith, ein Kalkgestein des milleren Jura. 
+
+Der pH gilt als eine wichtige und aussagekräftige Bodenkenngröße (@Scheffer)
 
 ```{r cars, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
 wordcountaddin::text_stats("pH_Nadel_zu_Laub.Rmd")
@@ -116,7 +120,7 @@ lines(ecdf(data1$pH), pch="", verticals=T) # passt gut !
 ks.test(data1$pH, "pnorm", fit.norm$estimate[1],+ fit.norm$estimate[2]) # interpretation ?
 
 # Visuelle Darstellung
-boxplot(data1$pH[which(data1$Anteil_Nadelbaum > 0)], data1$pH[which(data1$Anteil_Nadelbaum <= 0)], ylab="pH-Wert", names=c("Fichte","Buche"))
+boxplot(data1$pH[which(data1$Anteil_Nadelbaum > 0)], data1$pH[which(data1$Anteil_Nadelbaum <= 0)], ylab="pH-Wert", names=c("Nadelbaum","Laubbaum"))
 ```
 
 Die gemessenen pH-Werte unter Fichte liegen mit einem Minimum von 5,58 pH und einem Maximum von 7,47 pH im mäßig sauren bis schwach alkalischen Bereich, während im Buchen-Bergahorn-Mischwald mit einem Minimum von 6,44 pH und einem Maximum von 8,48 pH schwach saure bis mäßig alkalische pH-Werte gemessen wurden.
@@ -165,7 +169,10 @@ Das Variogram erreicht tendiert gegen eine Schwellen-Varianz ("sill varianz"). D
 
 
 # Diskussion
-kleinräumige Differenzen des pH können sich nicht so stark auf die Vegetation auswirken - fehlende Konkurrenz? Der Einfluss des lichtes ich viel Prägender (Fichte ganzjährig schattig)
+Laut @Koerner (S. 57) handelt es sich bei den Böden auf Hauptrogenstein am Schönberg um humusreiche flachgründige Böden (Rendzinen) mit einem hohen pH-Wert, der meist über dem Neutralpunkt liegt. Solche pH-Werte konnten wir unter dem Laubwaldbestand feststellen, jedoch nicht unter dem Nadelbestand. Da die Fichte Standortsfremd ist  und nicht der potentiell natürlichen Vegetation (PNV) des Schönbergs entspricht ist anzunehmen, dass der erst ca. 30 Jahre alte Fichtenbestand den pH-Wert des Oberbodens dem mit Mittleren pH-Wert von $6,6 \ pH$ bereits von seinem natürlichen Zustand abgesengt hat. Dem Zugrunde liegt jedoch die Annahme, das die Fläche vor der Bepflanzung mit Fichte und Buche einheitlich als Waldweide mit Baumarten der PNV genutzt wurde.
+
+Während die Fichtenstreu sich bereits auf den pH-Wert des Bodens ausgewirkt hat, so zeigt sich dies noch nicht in den Zeigerwerten der Bodenvegetation. Dies liegt daran, dass Zeigerwerte nicht nur den physiologischen Anspruch der Pflanze darstellen, sondern eine relative Standortskonstanz. Der Standort der Pflanze wird von vielen Faktoren beeinflusst, unter anderem Konkurrenz und Kooperation (@Wilmanns). Die kleinräumige Heterogenität der beschattenden Baumarten (Nadelbäume = ganzjährig weniger Licht), fehlende Konkurrenz und der starke Verbiss im Bestand wirkt sich wahrscheinlich auch auf die vorkommenden Arten aus. Ein weiterer Einflussfaktor auf die Vegetation stellt wahrscheinlich die ehemalige Nutzung als Waldweide dar. Beispielsweise haben wir an vielen Orten *Ilex aquifolium* in der Verjüngung vorgefunden, was laut @Koerner (S. 87) eine Erinnerung an die Zeit der Waldweide ist.
+Um den Unterschied der Vegetation auf Standorten mit einem pH-Wert Unterschied von nur 2 pH festzustellen, so müssten größere Flächen, die räumlich voneinander getrennt sind untersucht werden. Mit größeren Stichproben wäre dann zu erwarten, dass sich ein Unterschied in den vorkommenden Pflanzengesellschaften zeigt.
 
 # Literatur
 <div id="refs"></div>
