@@ -1,7 +1,7 @@
 ---
-title: "Veränderung des Boden-pH-Wertes und der Vegetation im Übergang von Nadel zu Laubwald"
-author: "Nele Stackelberg"
-date: "12 Juni 2018"
+title: "Veränderung des Boden-pH-Wertes und der Vegetation im Übergang von Nadel- zu Laubwald"
+author: "Nele Stackelberg   \n  Matrikelnummer: 3548205   \n -  \n Forschungsarbeit des Modul Freilandökologie Msc. Umweltwissenschaften  (1897 Wörter)  \n Dozierende: Gesine Pufal und Helmer Schack-Kirchner"
+date: "Freiburg, 16. Juni 2018"
 output:
   pdf_document:
     number_sections: yes
@@ -10,6 +10,14 @@ documentclass: article
 classoption: titlepage
 header-includes: 
   - \usepackage[german]{babel}
+  - \usepackage{titling}
+  - \usepackage[export]{adjustbox}
+  - \usepackage{placeins}
+  - \setlength{\droptitle}{-60pt}
+  - \pretitle{\center\LARGE\includegraphics[width=4cm, right]{Uni_Logo-Grundversion_E1_A4_CMYK.pdf} \vspace{50pt} \\ [\bigskipamount] }
+  - \posttitle{\vspace{10pt} \\ \vspace{5pt} }
+  - \predate{\includegraphics[width=12cm, center]{P1170149.jpg} \flushright\large\vspace{10pt}}
+  - \postdate{  \par }
 Extension: table_captions, tex_math_dollars
 bibliography: lit.bib
 biblio-style: apalike
@@ -44,7 +52,7 @@ Der Zeitliche Rahmen ermöglicht an bis zu 60 Punkten pH-Messungen sowie die Auf
 Die Auswahl fällt auf einen ca. 30 Jährigen Fichtenbestand am Schönberg auf ca. 520 m über NN, der an einen etwa gleichalten Buchen-Ahorn-Mischwald angrenzt (siehe Abb. \ref{karte1}). Bei dem Waldbestand handelt es laut Herr Bucher, dem Revierförster wahrscheinlich um eine Erstaufforstung. Vereinzelte Baumscheiben lassen auf die ehemalige Nutzung als Waldweide schließen, zudem lässt sich Terrassierung im Gelände erahnen weshalb auch eine ehemalige landwirtschaftliche Nutzung nicht auszuschließen ist. Die potentielle natürliche Vegetation der Fläche ist ein Waldmeister-Buchenwald, örtlich mit Orchideen-Buchenwald, Wucherblumen-Eschen-Hainbuchenwald sowie Weißseggen-Winterlindenwald [@pnv].
 Der Schönberg gehört zur Vorbergzone des Schwarzwald und hat auf der Probefläche als Grundgestein Hauptrogenstein. Der Hauptrogenstein, ein Gestein des Mitteljura (Dogger), ist ein oolithischer Kalkstein. Laut @Koerner (S. 57) handelt es sich auf diesem Gestein um Rendzinen mit einem hohen pH-Wert, der meist über dem Neutralpunkt liegt.
 
-Für die Probepunkte wird die 50 x 40 m große Fläche in Quadrate von 10 x 10 m eingeteilt, worein jeweils drei zufällige Probepunkte gelegt werden. Um die Position der Punkte zu wählen werden mit der Software R [@R] 60 zufällige Winkel und Entfernungen gezogen. Die zufälligen Punkte sind Grundbedingung für die (geo)statistische Auswertung um ungerichtete Schätzer zu gewährleisten [@geostat]. So werden der Reihe nach vom Mittelpunkt jedes Quadrates aus, jeweils drei Positionen für die Probenahme bestimmt.
+Für die Probepunkte wird die 50 x 40 m große Fläche in Quadrate von 10 x 10 m eingeteilt, worein jeweils drei zufällige Probepunkte gelegt werden. Um die Position der Punkte zu wählen werden mit der Software R [@R] 60 zufällige Winkel und Entfernungen gezogen. So werden der Reihe nach vom Mittelpunkt jedes Quadrates aus, jeweils drei Positionen für die Probenahme bestimmt. Die Probepunkte sind somit zufällig auf der Fläche verteilt, und ihre Entfernung zueinander deckt ein breites Spektrum an Distanzen ab ("nested sampling"). Dies ist Grundbedingung für die (geo)statistische Ausertung, da die räumliche Skala der Variation des pH-Wertes (noch) unbekannt ist [@geostat].  
 
 ```{r punkte}
 ## Veränderung des BodenpH und der Vegetation im Übergang von Nadel zu Laubwald
@@ -159,12 +167,16 @@ plot(vgm_pH, fit_vgm, xlab="Distanz in m", ylab="Semivarianz")
 ```
 
 Das gefittete Model wird verwendet um den pH-Wert der gesamten Fläche zu interpolieren. Das Ergebnis ist in Abbildung \ref{interpol} dargestellt. Der pH erreicht dort wo die Fichte steht, als Hauptbestandteil des Nadelholzes, mit unter pH 6 die tiefsten Werte. Die höchsten Werte des pH sind im Laubwaldbestand gemessen worden. Die pH-Werte der beiden Bestände unterscheiden sich, die Grenze zwischen Nadel und Laubwaldbestand ist jedoch nicht als deutliche Linie zu erkennen, sondern hat vielmehr einen diffusen Übergang.  
-
-```{r kriging, warning = FALSE, message = FALSE, fig.cap="Interpolation des pH-Wertes über die Probefläche (40 x 50 m). Norden ist links im Bild, Süden rechts. Der Anteil der Nadelbäume im Umkreis von 2m um jeden Probepunkt ist durch die Größe der schwarzen Punkte dargestellt. Die Nadelbäume sind fast ausschließlich Fichten, nur eine Lärche steht auf der Probefläche. Die Laubbäume sind in verschiedenen Anteilen Buche, Bergahorn, Esche und Linde. \\label{interpol}"}
+```{r include=FALSE}
 grid <- makegrid(geodat, cellsize = 0.5)
 #grid <- SpatialPoints(grid)
 coordinates(grid) <- ~x1 + x2
 pH_kriged <- krige(pH ~ 1, geodat, grid, model=fit_vgm)
+```
+
+
+
+```{r kriging, warning = FALSE, message = FALSE, fig.cap="Interpolation des pH-Wertes über die Probefläche (40 x 50 m). Norden ist links im Bild, Süden rechts. Der Anteil der Nadelbäume im Umkreis von 2m um jeden Probepunkt ist durch die Größe der schwarzen Punkte dargestellt. Die Nadelbäume sind fast ausschließlich Fichten, nur eine Lärche steht auf der Probefläche. Die Laubbäume sind in verschiedenen Anteilen Buche, Bergahorn, Esche und Linde. \\label{interpol}"}
 
 pH_kriged %>% as.data.frame %>% 
   mutate(pH_interpolation = var1.pred) %>% 
@@ -182,16 +194,13 @@ Es wurden insgesamt 37 Arten in der Bodenvegetation aufgenommen. Es sind krautig
 Für die Reaktionszahl (Zeigerwert nach Ellenberg aus @Rothmaler) der Vegetation der Krautschicht wird keine Korrelation mit dem pH-Wert festgestellt. Die Lichtzahl korreliert ebenfalls nicht mit dem pH-Wert. Von den 37 erfassten Arten kommen einige wenige wie *Viola reichenbachiana* und *Hedera helix* flächig vor, viele weitere Arten nur vereinzelt. Beispielsweise kam *Cephalanthera rubra*  fünf mal vor, viermal davon im Nadelwald.  
 
 # Diskussion
-Laut @Koerner (S. 57) handelt es sich bei den Böden auf Hauptrogenstein am Schönberg um humusreiche flachgründige Böden (Rendzinen) mit einem hohen pH-Wert, der meist über dem Neutralpunkt liegt. Solche pH-Werte konnten wir unter dem Laubwaldbestand feststellen, jedoch nicht unter dem Nadelbestand. Da die Fichte Standortsfremd ist  und nicht der potentiell natürlichen Vegetation (PNV) des Schönbergs entspricht ist anzunehmen, dass der erst ca. 30 Jahre alte Fichtenbestand den pH-Wert des Oberbodens dem mit Mittleren pH-Wert von $6,6 \ pH$ bereits von seinem natürlichen Zustand abgesengt hat. Dem Zugrunde liegt jedoch die Annahme, das die Fläche vor der Bepflanzung mit Fichte und Buche einheitlich als Waldweide mit Baumarten der PNV genutzt wurde.
+Die geostatistische Analyse mittels des einfachen Variograms zeigt ein deutliches Ergebnis. Ein Ergebnis mit einer noch signifikanteren Aussage würde man wahrscheinlich durch eine Analyse auf einen räumlich gerichteten Zusammenhang (Anisotropie) erzielen. Denn Aufgrund des Versuchsdesigns sollte die Verteilung des pH-Wert auf der Fläche anisotrop sein [@geostat].
+Auch die Interpolation ("kriging") ist für diese Arbeit eine geignete Analyse- und Darstellungsmethode. Alternativ ist auch eine Vorhersage des pH-Wertes auf der Fläche durch ein generalisiertes additives model möglich (GAM). Diese Methode hat sich in verschiedenen Studien für Daten mit erhöhtem zufällgen Fehler zu realitätsnäheren Ergebnisse geführt [@gam1, @gam2].
 
-Die absenkung des pH-Wertes im Oberboden auf der Fichten-dominierten Fläche kann durch den von der Baumart bedingten erhöhten Säureeintrag erklärt werden. Nadelbäume haben aufgrund ihrer ganzjährigen Benadelung und großen Blattoberfläche eine hohe Interzeption und filtern so organische Säuren (vor allem anthropogenen Ursprungs) aus der Atmosphäre [@Scheffer].
+Laut @Koerner (S. 57) handelt es sich bei den Böden auf Hauptrogenstein am Schönberg um humusreiche flachgründige Böden (Rendzinen) mit einem hohen pH-Wert, der meist über dem Neutralpunkt liegt. Solche pH-Werte konnten wir unter dem Laubwaldbestand feststellen, jedoch nicht unter dem Nadelbestand. Da die Fichte Standortsfremd ist  und nicht der potentiell natürlichen Vegetation (PNV) des Schönbergs entspricht ist anzunehmen, dass der erst ca. 30 Jahre alte Fichtenbestand den pH-Wert des Oberbodens dem mit Mittleren pH-Wert von $6,6 \ pH$ bereits von seinem natürlichen Zustand abgesengt hat. Dem Zugrunde liegt jedoch die Annahme, das die Fläche vor der Bepflanzung mit Fichte und Buche einheitlich als Waldweide mit Baumarten der PNV genutzt wurde und das diese Nutzung keinen starken Einfluss auf den pH-Wert des Boden-pH hatte.
+
+Die Absenkung des pH-Wertes im Oberboden auf der Fichten-dominierten Fläche kann durch den von der Baumart bedingten erhöhten Säureeintrag erklärt werden. Nadelbäume haben aufgrund ihrer ganzjährigen Benadelung und großen Blattoberfläche eine hohe Interzeption und filtern so organische Säuren (vor allem anthropogenen Ursprungs) aus der Atmosphäre [@Scheffer].
 @Matzner stellten unter Fichte sogar etwa doppelt so hohe Depositionsraten von Protonen fest wie unter Buche. Auch die schwer zersetzbare Streu der Fichte verstärkt den Säureeintrag in den Boden und führt zur Bildung der Humusform F-Mull.
-
-räumliche Analyse -> gerichtete Abhängigkeit im Raum noch mit einbeziehen.
-interpolation -> gam
-
-Punkte sind ungleichmäßig Verteilt in zwei dimensionen. Sample-variogram experimental variogram
-Das Variogram erreicht tendiert gegen eine Schwellen-Varianz ("sill varianz"). Diese gleicht der gesamten Varianz des Datensatzes. Ist die Schwelle erreicht, so bedeutet das, dass Punkte die in solch einer Entfernung zu einem andern Punkt liegen nicht mehr von diesem beeinflusst werden. Wir können in unserem Beispiel jedoch von Anisotropie ausgehen (Richtungsabhängigkeit). Dies ist 
 
 Während die Fichtenstreu sich bereits auf den pH-Wert des Bodens ausgewirkt hat, so zeigt sich dies noch nicht in den Zeigerwerten der Bodenvegetation. Dies liegt daran, dass Zeigerwerte nicht nur den physiologischen Anspruch der Pflanze darstellen, sondern eine relative Standortskonstanz. Der Standort der Pflanze wird von vielen Faktoren beeinflusst, unter anderem Konkurrenz und Kooperation [@Wilmanns]. Die kleinräumige Heterogenität der beschattenden Baumarten (Nadelbäume = ganzjährig weniger Licht), fehlende Konkurrenz und der starke Verbiss im Bestand wirkt sich wahrscheinlich auch auf die vorkommenden Arten aus. Ein weiterer Einflussfaktor auf die Vegetation stellt wahrscheinlich die ehemalige Nutzung als Waldweide dar. Beispielsweise haben wir an vielen Orten *Ilex aquifolium* in der Verjüngung vorgefunden, was laut @Koerner (S. 87) eine Erinnerung an die Zeit der Waldweide ist.
 Um den Unterschied der Vegetation auf Standorten mit einem pH-Wert Unterschied von nur 2 pH festzustellen, so müssten größere Flächen, die räumlich voneinander getrennt sind untersucht werden. Mit größeren Stichproben wäre dann zu erwarten, dass sich ein Unterschied in den vorkommenden Pflanzengesellschaften zeigt.
@@ -199,7 +208,47 @@ Um den Unterschied der Vegetation auf Standorten mit einem pH-Wert Unterschied v
 # Literatur
 <div id="refs"></div>
 
+\newpage
+
 # Anhang {-}
+\FloatBarrier
+```{r}
+# Vegetation
+vegetation1 <- vegetation[,-c(8, 17)] 
+zeigerwerte1 <- zeigerwerte %>% 
+  mutate(R = ifelse(R %in% c("x", "NaN"), NA, as.numeric(R))) %>% 
+  mutate(L = ifelse(L %in% c("x", "NaN") , NA, as.numeric(L)))
+
+vegetation1 <- vegetation1 %>% 
+  tidyr::gather("Art", "Deckung", 7:44) %>% 
+  left_join(zeigerwerte1, by=c("Art"="Krautschicht")) %>% 
+  mutate(R = ifelse(Deckung %in% c("0", NA), NA, R)) %>% 
+  mutate(L = ifelse(Deckung %in% c("0", NA), NA, L)) 
+
+# Für jeden Punkt den Mittelwert der Zeigerwerte berechnen:
+mittlere_zeigerwerte <- vegetation1 %>% 
+  group_by(id) %>% 
+  summarise(R = mean(R, na.rm=T), L = mean(L, na.rm = T))
+
+dataveg <- left_join(data1, mittlere_zeigerwerte, by="id")
+
+anhang <- dataveg %>% dplyr::select(-c(x, y, punkt, grad, dist, Anmerkung))
+
+knitr::kable(anhang, "latex", caption= "Die Aufgenommenen pH-Werte aller Probepunkte und Anteile der Arten in der Baumschicht") %>% kableExtra::kable_styling(latex_options =c("striped", "scale_down"))
+```
+
+```{r}
+anhangveg <- vegetation %>% dplyr::select(-c(x,y,punkt,grad,dist))
+anhangveg1 <- anhangveg[,1:15]
+anhangveg2 <- anhangveg[,c(1,2,16:28)]
+anhangveg3 <- anhangveg[,c(1,2,29:41)]
+taba <- knitr::kable(anhangveg1, "latex", caption = "a: (erste Tabelle von drei) Die Aufgenommenen Pflanzenarten der Krautschicht aller Probepunkte und ihre Anteile") %>% kableExtra::kable_styling(latex_options =c("striped", "scale_down"))
+kableExtra::landscape(taba)
+tabb <- knitr::kable(anhangveg2, "latex", caption = "b: (zweite Tabelle von drei) Die Aufgenommenen Pflanzenarten der Krautschicht aller Probepunkte und ihre Anteile") %>% kableExtra::kable_styling(latex_options =c("striped", "scale_down"))
+kableExtra::landscape(tabb)
+tabc <- knitr::kable(anhangveg3, "latex", caption = "c: (dritte Tabelle von drei) Die Aufgenommenen Pflanzenarten der Krautschicht aller Probepunkte und ihre Anteile") %>% kableExtra::kable_styling(latex_options =c("striped", "scale_down"))
+kableExtra::landscape(tabc)
+```
 
 ```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
 ```
